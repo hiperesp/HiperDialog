@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+		<title>HiperDialog by Hiperesp</title>
+		<link rel="stylesheet" id="alert-lights" type="text/css" href="src/css/color/default.css">
+		<link rel="stylesheet" type="text/css" href="src/css/style.css">
+		<script type="application/javascript" src="src/js/core.js"></script>
+		<script type="application/javascript" src="src/js/extra.js"></script>
+	</head>
+	<body>
+		<h1>HiperDialog</h1><button onclick="toggleAlertLights()">Alterar cores dos alerts</button>
+		<hr>
+		<h2>Exemplos</h2>
+		<div>
+			<div>
+				<h3>Simples</h3>
+				<div>
+					<button onclick="example(0)">Alert</button>
+					<button onclick="example(1)">Confirm</button>
+					<button onclick="example(2)">Prompt</button>
+				</div>
+				<div>
+					<button onclick="example(3)">Alert completo</button>
+					<button onclick="example(4)">Confirm completo</button>
+					<button onclick="example(5)">Prompt completo</button>
+				</div>
+			</div>
+			<div>
+				<h3>Avançados</h3>
+				<div>
+					<button onclick="example(7)">Introdução</button>
+					<button onclick="example(6)">Diálogo avançado</button>
+				</div>
+			</div>
+		</div>
+		<script>
+let currentLightMode = 0;
+async function toggleAlertLights(){
+	const modes = ["light", "dark", "black"];
+	currentLightMode++;
+	if(currentLightMode>=modes.length) {
+		currentLightMode = 0;
+	}
+	await alertDialog("Trocando o esquema de cores dos diálogos...", "Esquema de cores dos diálogos");
+	document.querySelector("#alert-lights").href = "src/css/color/"+modes[currentLightMode]+".css";
+	await alertDialog("O esquema de cores dos diálogos foram trocadas para \""+modes[currentLightMode]+"\"", "Esquema de cores dos diálogos");
+}
+async function example(id) {
+	const examples = [
+		() => alertDialog("Mensagem para o alert"),
+		() => confirmDialog("Mensagem para o confirm"),
+		() => promptDialog("Mensagem para o prompt", "Valor padrão"),
+		() => alertDialog("Mensagem para o alert", "Título do alert"),
+		() => confirmDialog("Mensagem para o confirm", "Título do confirm"),
+		() => promptDialog("Mensagem para o prompt (apaga o valor padrão, tem placeholder)", "Valor padrão", "Título do prompt", "Placeholder"),
+		() => new Dialog("Teste", "Diálogo de teste")
+				.addElement(
+					/*0*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
+					,/*1*/new DialogButton("Deixar de seguir", "negative", false)
+					,/*2*/new DialogButton("Ir para a publicação", "normal", true)
+					,/*3*/new DialogButton("Compartilhar", "normal", true)
+					,/*4*/new DialogButton("Copiar link", "normal", false)
+					,/*5*/new DialogButton("Incorporar", "positive", false)
+					,/*6*/new DialogButton("Cancelar", "positive", true)
+				)
+				.prompt(),
+		async () => {
+			await alertDialog("Esse é um alert");
+			const confirmAnswer = await confirmDialog("Esse é um diálogo de confirmação. Você também pode navegar pelas opções utilizando a tecla \"TAB\".");
+			if(confirmAnswer) {
+				await alertDialog("Você CONFIRMOU o diálogo de confirmação!");
+			} else {
+				await alertDialog("Você NEGOU o diálogo de confirmação!");
+			}
+			const promptAnswer = await promptDialog("Qual é o seu nome?");
+			await alertDialog("Olá, seu nome é "+promptAnswer);
+			await alertDialog("Você também pode colocar títulos nos dialogs");
+			await alertDialog("título no Alert", "Como esse")
+			const confirmAnswer2 = await confirmDialog("título no Confirm Dialog", "Ou esse")
+			if(confirmAnswer2) {
+				await alertDialog("com título", "Você confirmou!");
+			} else {
+				await alertDialog("com título", "Você negou!");
+			}
+			await alertDialog("nos diálogos de prompt!", "Você também pode colocar títulos e placeholders");
+			const promptAnswer2 = await promptDialog("O placeholder tem o seu nome anterior", "", "Qual é o seu nome? (denovo)", promptAnswer);
+			await alertDialog("Olá, seu nome é "+promptAnswer2);
+			await alertDialog("Com inputs e botões habilitados e desabilitados, positivos, negativos e normais", "Você também pode criar diálogos com múltiplas opções");
+			await alertDialog("do botão \"Diálogo avançado\", da seção \"Avançados\" (ao lado desse botão que você apertou.", "Como esse.");
+		}
+	];
+	const answer = await examples[id]();
+	alertDialog("A função anterior retornou \""+answer+"\" ("+typeof answer+").", "Retorno da chamada");
+}
+		</script>
+	</body>
+</html>
