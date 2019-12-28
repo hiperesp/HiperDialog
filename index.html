@@ -4,47 +4,60 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 		<title>HiperDialog by Hiperesp</title>
-		<link rel="stylesheet" id="alert-lights" type="text/css" href="src/css/color/default.css">
+		<link rel="stylesheet" id="dialog-lights" type="text/css" href="src/css/color/default.css">
 		<link rel="stylesheet" type="text/css" href="src/css/style.css">
 		<script type="application/javascript" src="src/js/core.js"></script>
 		<script type="application/javascript" src="src/js/extra.js"></script>
 	</head>
-	<body>
-		<h1>HiperDialog</h1><button onclick="toggleAlertLights()">Alterar cores dos alerts</button>
-		<hr>
-		<h2>Exemplos</h2>
-		<div>
+	<body style="margin: 0;background-image: url('https://source.unsplash.com/random/1366x768'); background-size: cover;background-attachment: fixed;background-position: center;">
+		<div style="margin: 1em; padding: 1em; border-radius: 0.5em; background-color: hsla(0deg, 0%, 100%, 80%); width: fit-content;">
+			<h1>HiperDialog</h1><button onclick="toggleDialogLights()">Alterar cores dos dialogs</button>
+			<hr>
+			<h2>Exemplos</h2>
 			<div>
-				<h3>Simples</h3>
 				<div>
-					<button onclick="example(0)">Alert</button>
-					<button onclick="example(1)">Confirm</button>
-					<button onclick="example(2)">Prompt</button>
+					<h3>Simples</h3>
+					<div>
+						<h4>Padrão</h4>
+						<button onclick="example(0)">Alert</button>
+						<button onclick="example(1)">Confirm</button>
+						<button onclick="example(2)">Prompt</button>
+					</div>
+					<div>
+						<h4>Com título</h4>
+						<button onclick="example(3)">Alert</button>
+						<button onclick="example(4)">Confirm</button>
+						<button onclick="example(5)">Prompt</button>
+					</div>
 				</div>
 				<div>
-					<button onclick="example(3)">Alert completo</button>
-					<button onclick="example(4)">Confirm completo</button>
-					<button onclick="example(5)">Prompt completo</button>
+					<h3>Avançados</h3>
+					<div>
+						<button onclick="example(7)">"Introdução"</button>
+					</div>
+					<div>
+						<button onclick="example(6)">Múltiplos botões</button>
+						<button onclick="example(9)">Scroll</button>
+					</div>
 				</div>
-			</div>
-			<div>
-				<h3>Avançados</h3>
 				<div>
-					<button onclick="example(7)">Introdução</button>
-					<button onclick="example(6)">Diálogo avançado</button>
+					<h3>Alguns exemplos aplicáveis</h3>
+					<p>Além de "alert", "confirm" e "prompt".</p>
+					<div>
+						<button onclick="example(8)">Feedback</button>
+					</div>
 				</div>
 			</div>
 		</div>
-		<script>
-let currentLightMode = 0;
-async function toggleAlertLights(){
-	const modes = ["light", "dark", "black"];
+	<script>currentLightMode = 0;
+async function toggleDialogLights(){
+	const modes = ["light", "dark"];
 	currentLightMode++;
 	if(currentLightMode>=modes.length) {
 		currentLightMode = 0;
 	}
 	await alertDialog("Trocando o esquema de cores dos diálogos...", "Esquema de cores dos diálogos");
-	document.querySelector("#alert-lights").href = "src/css/color/"+modes[currentLightMode]+".css";
+	document.querySelector("#dialog-lights").href = "src/css/color/"+modes[currentLightMode]+".css";
 	await alertDialog("O esquema de cores dos diálogos foram trocadas para \""+modes[currentLightMode]+"\"", "Esquema de cores dos diálogos");
 }
 async function example(id) {
@@ -57,13 +70,13 @@ async function example(id) {
 		() => promptDialog("Mensagem para o prompt (apaga o valor padrão, tem placeholder)", "Valor padrão", "Título do prompt", "Placeholder"),
 		() => new Dialog("Teste", "Diálogo de teste")
 				.addElement(
-					/*0*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
+					 /*0*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
 					,/*1*/new DialogButton("Deixar de seguir", "negative", false)
 					,/*2*/new DialogButton("Ir para a publicação", "normal", true)
 					,/*3*/new DialogButton("Compartilhar", "normal", true)
 					,/*4*/new DialogButton("Copiar link", "normal", false)
 					,/*5*/new DialogButton("Incorporar", "positive", false)
-					,/*6*/new DialogButton("Cancelar", "positive", true)
+					,/*6*/new DialogButton("Cancelar", "positive", true, true)
 				)
 				.prompt(),
 		async () => {
@@ -89,7 +102,58 @@ async function example(id) {
 			await alertDialog("Olá, seu nome é "+promptAnswer2);
 			await alertDialog("Com inputs e botões habilitados e desabilitados, positivos, negativos e normais", "Você também pode criar diálogos com múltiplas opções");
 			await alertDialog("do botão \"Diálogo avançado\", da seção \"Avançados\" (ao lado desse botão que você apertou.", "Como esse.");
-		}
+		},
+		async () => {
+			let assunto, mensagem;
+			const clickedButtonId = await new Dialog("Feedback", "Enviar Feedback")
+				.addElement(
+					 /*0*/assunto = new DialogInput("Assunto")
+					,/*1*/mensagem = new DialogTextarea("Mensagem")
+					,/*2*/new DialogButton("Enviar", "positive", undefined, true)
+					,/*3*/new DialogButton("Cancelar", "negative")
+				)
+				.prompt();
+			if(clickedButtonId==2) {
+				const confirm = await new Dialog("Confirmar envio do Feedback?")
+					.addElement(
+						 /*0*/new DialogInput("Assunto", assunto.value, undefined, false)
+						,/*1*/new DialogTextarea("Mensagem", mensagem.value, false)
+						,/*2*/new DialogButton("Enviar", "positive", undefined, true)
+						,/*3*/new DialogButton("Cancelar", "negative")
+					)
+					.prompt();
+				if(confirm==2) {
+					await alertDialog("O Feedback foi enviado com sucesso, mas na verdade não, já que esse é um exemplo", "Feedback enviado");
+					return;
+				}
+			}
+			await alertDialog("O Feedback não foi enviado", "Feedback cancelado");
+		},
+		() => new Dialog("Teste", "Diálogo de teste")
+				.addElement(
+					 /* 0*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
+					,/* 1*/new DialogButton("Deixar de seguir", "negative", false)
+					,/* 2*/new DialogButton("Ir para a publicação", "normal", true)
+					,/* 3*/new DialogButton("Compartilhar", "normal", true)
+					,/* 4*/new DialogButton("Copiar link", "normal", false)
+					,/* 5*/new DialogButton("Incorporar", "positive", false)
+					,/* 6*/new DialogButton("Cancelar", "positive", true, true)
+					,/* 7*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
+					,/* 8*/new DialogButton("Deixar de seguir", "negative", false)
+					,/* 9*/new DialogButton("Ir para a publicação", "normal", true)
+					,/*10*/new DialogButton("Compartilhar", "normal", true)
+					,/*11*/new DialogButton("Copiar link", "normal", false)
+					,/*12*/new DialogButton("Incorporar", "positive", false)
+					,/*13*/new DialogButton("Cancelar", "positive", true, true)
+					,/*14*/new DialogButton("Denunciar conteúdo impróprio", "negative", true)
+					,/*15*/new DialogButton("Deixar de seguir", "negative", false)
+					,/*16*/new DialogButton("Ir para a publicação", "normal", true)
+					,/*17*/new DialogButton("Compartilhar", "normal", true)
+					,/*18*/new DialogButton("Copiar link", "normal", false)
+					,/*19*/new DialogButton("Incorporar", "positive", false)
+					,/*20*/new DialogButton("Cancelar", "positive", true, true)
+				)
+				.prompt(),
 	];
 	const answer = await examples[id]();
 	alertDialog("A função anterior retornou \""+answer+"\" ("+typeof answer+").", "Retorno da chamada");

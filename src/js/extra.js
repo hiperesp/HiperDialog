@@ -1,12 +1,13 @@
-async function alertDialog(text = "", title = null) {
+"use strict";
+async function alertDialog(text, title) {
     const dialog = new Dialog(title, text);
-    dialog.addElement(/*0*/new DialogButton("OK", "positive"));
+    dialog.addElement(/*0*/new DialogButton("OK", "positive", undefined, true));
     await dialog.prompt();
 }
-async function confirmDialog(text = "", title = null) {
+async function confirmDialog(text, title) {
     const dialog = new Dialog(title, text);
     dialog.addElement(
-        /*0*/new DialogButton("OK", "positive")
+        /*0*/new DialogButton("OK", "positive", undefined, true)
        ,/*1*/new DialogButton("Cancelar", "negative")
     );
     const answer = await dialog.prompt();
@@ -15,12 +16,12 @@ async function confirmDialog(text = "", title = null) {
     }
     return false;
 }
-async function promptDialog(text = "", defaultValue = "", title = null, placeholder = "") {
+async function promptDialog(text, defaultValue, title, placeholder) {
     const input = new DialogInput(placeholder, defaultValue);
     const dialog = new Dialog(title, text);
     dialog.addElement(
         /*0*/input
-       ,/*1*/new DialogButton("OK", "positive")
+       ,/*1*/new DialogButton("OK", "positive", undefined, true)
        ,/*2*/new DialogButton("Cancelar", "negative")
     );
     const answer = await dialog.prompt();

@@ -19,33 +19,40 @@
 }
 
 .dialog {
+    -webkit-tap-highlight-color: transparent;
     position: fixed;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--background-color-dialog);
-    backdrop-filter: blur(0.5em);
+    background-color: var(--backdrop-color);
     display: table;
     outline: none;
     user-select: none;
     animation: dialog-background-show 0.25s;
     transition: opacity 0.125s;
+    font-family: 'Helvetica', 'Arial', sans-serif;
 }
 .dialog .dialog-container {
     display: table-cell;
     vertical-align: middle;
 }
 .dialog .dialog-content {
-    box-shadow: 0 0 0.5em var(--shadow-color);
+    /*box-shadow: 0 0 0.5em var(--shadow-color);*/
     margin: 0 auto;
     background-color: var(--background-color);
+    backdrop-filter: blur(0.625em);
     border-radius: 1em;
     width: calc(100% - 5em);
     max-width: 25em;
     overflow: auto;
     max-height: 80vh;
     animation: dialog-content-show 0.25s;
+}
+.dialog .dialog-content .dialog-title,
+.dialog .dialog-content .dialog-text {
+    white-space: pre-line;
+    word-wrap: break-word;
 }
 .dialog .dialog-content .dialog-title {
     text-align: center;
@@ -61,21 +68,34 @@
     color: var(--text-color);
 }
 .dialog .dialog-content .dialog-title ~ button:nth-child(2),
-.dialog .dialog-content .dialog-title ~ input:nth-child(2) {
+.dialog .dialog-content .dialog-title ~ input:nth-child(2),
+.dialog .dialog-content .dialog-title ~ textarea:nth-child(2) {
     margin-top: 1em;
 }
 .dialog .dialog-content .dialog-text:first-child {
     padding: 1em 1em 1em 1em;
 }
+.dialog .dialog-content textarea {
+    min-height: 2.5em;
+    resize: none;
+    vertical-align: bottom;
+}
 .dialog .dialog-content button,
-.dialog .dialog-content input {
+.dialog .dialog-content input,
+.dialog .dialog-content textarea {
+    font-family: inherit;
+}
+.dialog .dialog-content button,
+.dialog .dialog-content input,
+.dialog .dialog-content textarea {
     border: none;
     outline: none;
     border-top-style: solid;
-    border-top-width: 0.1em;
+    border-top-width: 0.05em;
     border-top-color: var(--border-color);
 }
-.dialog .dialog-content input {
+.dialog .dialog-content input,
+.dialog .dialog-content textarea {
     padding: 1em;
     width: calc(100% - 2em);
     background-color: var(--background-color-2);
@@ -84,8 +104,8 @@
 .dialog .dialog-content button {
     display: block;
     width: 100%;
-    padding: 1em 0;
-    font-size: 0.9em;
+    padding: 1em;
+    font-size: 1em;
     background-color: transparent;
     cursor: pointer;
 }
@@ -93,12 +113,12 @@
     text-decoration: underline;
 }
 .dialog .dialog-content button:first-child,
-.dialog .dialog-content input:first-child {
+.dialog .dialog-content input:first-child,
+.dialog .dialog-content textarea:first-child {
     border-top-style: none;
 }
 
-.dialog button.dialog-positive,
-.dialog button.dialog-negative {
+.dialog button.dialog-bold {
     font-weight: 700;
 }
 .dialog button.dialog-normal {
@@ -122,9 +142,9 @@
 }
 
 @media (max-width: 42em) {
-    .dialog {
+    /*.dialog .dialog-content {
         backdrop-filter: none;
-    }
+    }*/
     .dialog .dialog-content button:focus::first-letter {
         text-decoration: none;
     }    
