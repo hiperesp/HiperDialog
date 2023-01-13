@@ -42,6 +42,7 @@
     margin: 0 auto;
     background-color: var(--background-color);
     backdrop-filter: blur(0.625em);
+    -webkit-backdrop-filter: blur(0.625em);
     border-radius: 1em;
     width: calc(100% - 5em);
     max-width: 25em;
